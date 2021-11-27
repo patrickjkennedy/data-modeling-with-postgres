@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS songplays (
     start_time INT,
     user_id INT,
     level VARCHAR,
-    song_id INT,
-    artist_id INT,
+    song_id VARCHAR,
+    artist_id VARCHAR,
     session_id INT,
     location VARCHAR,
     user_agent VARCHAR);
@@ -23,59 +23,66 @@ CREATE TABLE IF NOT EXISTS songplays (
 
 user_table_create = ("""
 CREATE TABLE IF NOT EXISTS users (
-    user_id INT PRIMARY KEY,
-    first_name VARCHAR,
-    last_name VARCHAR,
+    userId INT PRIMARY KEY,
+    firstName VARCHAR,
+    lastName VARCHAR,
     gender VARCHAR,
     level VARCHAR);
 """)
 
 song_table_create = ("""
 CREATE TABLE IF NOT EXISTS songs (
-    song_id INT PRIMARY KEY,
+    song_id VARCHAR PRIMARY KEY,
     title VARCHAR,
-    artist_id INT,
+    artist_id VARCHAR,
     year INT,
     duration NUMERIC);
 """)
 
 artist_table_create = ("""
 CREATE TABLE IF NOT EXISTS artists (
-    artist_id INT PRIMARY KEY,
-    name VARCHAR,
-    location VARVHAR,
-    latitude NUMERIC,
-    longitude NUMERIC);
+    artist_id VARCHAR PRIMARY KEY,
+    artist_name VARCHAR,
+    artist_location VARCHAR,
+    artist_latitude NUMERIC,
+    artist_longitude NUMERIC);
 """)
 
 time_table_create = ("""
 CREATE TABLE IF NOT EXISTS time (
-    start_time INT PRIMARY KEY,
+    start_time BIGINT PRIMARY KEY,
     hour INT,
     day INT,
     week INT,
     month INT,
     year INT,
-    weekday VARCHAR);
+    weekday INT);
 """)
 
 # INSERT RECORDS
 
-songplay_table_insert = ("""
-INSERT 
+songplay_table_insert = (""" 
 """)
 
 user_table_insert = ("""
+INSERT INTO users (userId, firstName, lastName, gender, level)
+VALUES (%s, %s, %s, %s, %s);
 """)
 
 song_table_insert = ("""
+INSERT INTO songs (song_id, title, artist_id, year, duration)
+VALUES (%s, %s, %s, %s, %s);
 """)
 
 artist_table_insert = ("""
+INSERT INTO artists (artist_id, artist_name, artist_location, artist_latitude, artist_longitude)
+VALUES (%s, %s, %s, %s, %s);
 """)
 
 
 time_table_insert = ("""
+INSERT INTO time (start_time, hour, day, week, month, year, weekday)
+VALUES (%s, %s, %s, %s, %s, %s, %s);
 """)
 
 # FIND SONGS

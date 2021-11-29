@@ -6,6 +6,17 @@ from sql_queries import *
 
 
 def process_song_file(cur, filepath):
+    """
+    Description: This function can be used to read the file in the filepath (data/song_data)
+    to get the song and artist info and used to populate the song and artist dim tables.
+
+    Arguments:
+      cur: the cursor object. 
+      filepath: song data file path. 
+
+    Returns:
+      None
+    """
     # open song file
     df = pd.read_json(filepath, lines=True)
 
@@ -19,6 +30,17 @@ def process_song_file(cur, filepath):
 
 
 def process_log_file(cur, filepath):
+    """
+    Description: This function can be used to read the file in the filepath (data/log_data)
+    to get the user and time info and used to populate the users and time dim tables.
+
+    Arguments:
+      cur: the cursor object. 
+      filepath: song data file path. 
+
+    Returns:
+      None
+    """
     # open log file
     df = pd.read_json(filepath, lines=True)
 
@@ -29,7 +51,7 @@ def process_log_file(cur, filepath):
     t = pd.to_datetime(df['ts'],unit='ms')
     
     # insert time data records
-    time_data = (df['ts'], t.dt.hour, t.dt.day, t.dt.isocalendar().week, t.dt.month, t.dt.year, t.dt.weekday)
+    time_data = (t, t.dt.hour, t.dt.day, t.dt.isocalendar().week, t.dt.month, t.dt.year, t.dt.weekday)
     column_labels = ('start_time', 'hour', 'day', 'week', 'month', 'year', 'weekday')
     time_df = pd.DataFrame.from_dict(dict(zip(column_labels, time_data)))
 
@@ -60,11 +82,23 @@ def process_log_file(cur, filepath):
             songid, artistid = None, None
 
         # insert songplay record
-        songplay_data = (row.ts, row.userId, row.level, songid, artistid, row.sessionId, row.location, row.userAgent)
+        songplay_data = (pd.to_datetime(row.ts,unit='ms'), row.userId, row.level, songid, artistid, row.sessionId, row.location, row.userAgent)
         cur.execute(songplay_table_insert, songplay_data)
 
 
 def process_data(cur, conn, filepath, func):
+    """
+    Description: This function is used to process all files in the provided filepath.
+
+    Arguments:
+      cur: the cursor object.
+      conn: the connection object.
+      filepath: log data file path.
+      func: Function to process the files with.
+
+    Returns:
+      None
+    """
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -84,6 +118,22 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
+    """
+    Description: This function performs the following:
+    
+    - Establishes connection with the sparkify database and gets
+    cursor to it.  
+    
+    - Processes the song and log data into the fact and dimension tables in the sparkify database.
+        
+    - Closes the connection.
+    
+    Arguments:
+      None
+
+    Returns:
+      None
+    """
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 

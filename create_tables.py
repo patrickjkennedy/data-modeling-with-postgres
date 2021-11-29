@@ -4,8 +4,16 @@ from sql_queries import create_table_queries, drop_table_queries
 
 def create_database():
     """
+    Description:
     - Creates and connects to the sparkifydb
     - Returns the connection and cursor to sparkifydb
+    
+    Arguments:
+      None
+      
+    Returns:
+      cur: cursor to sparkifydb.
+      conn: connection to sparkifydb.
     """
     
     # connect to default database
@@ -29,7 +37,14 @@ def create_database():
 
 def drop_tables(cur, conn):
     """
-    Drops each table using the queries in `drop_table_queries` list.
+    Description: Drops each table using the queries in `drop_table_queries` list.
+    
+    Arguments:
+      cur: the cursor object.
+      conn: the connection object.
+      
+    Returns:
+      None
     """
     for query in drop_table_queries:
         cur.execute(query)
@@ -38,7 +53,14 @@ def drop_tables(cur, conn):
 
 def create_tables(cur, conn):
     """
-    Creates each table using the queries in `create_table_queries` list. 
+    Description: Creates each table using the queries in `create_table_queries` list. 
+    
+    Arguments:
+      cur: the cursor object.
+      conn: the connection object.
+      
+    Returns:
+      None    
     """
     for query in create_table_queries:
         cur.execute(query)
@@ -47,6 +69,8 @@ def create_tables(cur, conn):
 
 def main():
     """
+    Description: This function performs the following:
+
     - Drops (if exists) and Creates the sparkify database. 
     
     - Establishes connection with the sparkify database and gets
@@ -56,7 +80,14 @@ def main():
     
     - Creates all tables needed. 
     
-    - Finally, closes the connection. 
+    - Finally, closes the connection.
+    
+    Arguments:
+      None
+
+    Returns:
+      None
+    
     """
     cur, conn = create_database()
     

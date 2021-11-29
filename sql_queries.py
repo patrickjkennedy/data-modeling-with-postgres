@@ -10,78 +10,90 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 
 songplay_table_create = ("""
 CREATE TABLE IF NOT EXISTS songplays (
-    songplay_id SERIAL,
-    ts BIGINT,
-    userId INT,
-    level VARCHAR,
+    songplayId SERIAL PRIMARY KEY,
+    startTime TIMESTAMP NOT NULL,
+    userId INT NOT NULL,
+    level VARCHAR NOT NULL,
     songId VARCHAR,
     artistId VARCHAR,
-    sessionId INT,
-    location VARCHAR,
-    userAgent VARCHAR);
+    sessionId INT NOT NULL,
+    location VARCHAR NOT NULL,
+    userAgent VARCHAR NOT NULL);
 """)
 
 user_table_create = ("""
 CREATE TABLE IF NOT EXISTS users (
     userId INT PRIMARY KEY,
-    firstName VARCHAR,
-    lastName VARCHAR,
-    gender VARCHAR,
-    level VARCHAR);
+    firstName VARCHAR NOT NULL,
+    lastName VARCHAR NOT NULL,
+    gender VARCHAR NOT NULL,
+    level VARCHAR NOT NULL);
 """)
 
 song_table_create = ("""
 CREATE TABLE IF NOT EXISTS songs (
     song_id VARCHAR PRIMARY KEY,
-    title VARCHAR,
-    artist_id VARCHAR,
-    year INT,
-    duration NUMERIC);
+    title VARCHAR NOT NULL,
+    artist_id VARCHAR NOT NULL,
+    year INT NOT NULL,
+    duration NUMERIC NOT NULL);
 """)
 
 artist_table_create = ("""
 CREATE TABLE IF NOT EXISTS artists (
     artist_id VARCHAR PRIMARY KEY,
-    artist_name VARCHAR,
-    artist_location VARCHAR,
-    artist_latitude NUMERIC,
-    artist_longitude NUMERIC);
+    artist_name VARCHAR NOT NULL,
+    artist_location VARCHAR NOT NULL,
+    artist_latitude NUMERIC NOT NULL,
+    artist_longitude NUMERIC NOT NULL);
 """)
 
 time_table_create = ("""
 CREATE TABLE IF NOT EXISTS time (
-    start_time BIGINT PRIMARY KEY,
-    hour INT,
-    day INT,
-    week INT,
-    month INT,
-    year INT,
-    weekday INT);
+    start_time TIMESTAMP PRIMARY KEY,
+    hour INT NOT NULL,
+    day INT NOT NULL,
+    week INT NOT NULL,
+    month INT NOT NULL,
+    year INT NOT NULL,
+    weekday INT NOT NULL);
 """)
 
 # INSERT RECORDS
 
 songplay_table_insert = (""" 
-INSERT INTO songplays (ts, userId, level, songId, artistId, sessionId, location, userAgent)
+INSERT INTO songplays (startTime, userId, level, songId, artistId, sessionId, location, userAgent)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
 """)
 
 user_table_insert = ("""
 INSERT INTO users (userId, firstName, lastName, gender, level)
 VALUES (%s, %s, %s, %s, %s)
-ON CONFLICT (userId) DO NOTHING;
+ON CONFLICT (userId) DO UPDATE SET 
+firstName=EXCLUDED.firstName,
+lastName=EXCLUDED.lastName,
+gender=EXCLUDED.gender,
+level=EXCLUDED.level;
 """)
 
 song_table_insert = ("""
 INSERT INTO songs (song_id, title, artist_id, year, duration)
 VALUES (%s, %s, %s, %s, %s)
-ON CONFLICT (song_id) DO NOTHING;
+ON CONFLICT (song_id) DO UPDATE SET 
+title=EXCLUDED.title,
+artist_id=EXCLUDED.artist_id,
+year=EXCLUDED.year,
+duration=EXCLUDED.duration;
 """)
 
 artist_table_insert = ("""
 INSERT INTO artists (artist_id, artist_name, artist_location, artist_latitude, artist_longitude)
 VALUES (%s, %s, %s, %s, %s)
-ON CONFLICT (artist_id) DO NOTHING;
+ON CONFLICT (artist_id) DO UPDATE SET 
+artist_name=EXCLUDED.artist_name,
+artist_location=EXCLUDED.artist_location,
+artist_latitude=EXCLUDED.artist_latitude,
+artist_longitude=EXCLUDED.artist_longitude;
 """)
 
 
